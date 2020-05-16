@@ -26,7 +26,19 @@ public class Commandhome extends EssentialsCommand {
         User player = user;
         String homeName = "";
         String[] nameParts;
-        if (args.length > 0) {
+        
+        if (args.length == 0) {
+            if (user.isAuthorized("essentials.home.bed")) {
+                final Location bed = player.getBase().getBedSpawnLocation();
+                if (bed != null) {
+                    user.getTeleport().teleport(bed, charge, TeleportCause.COMMAND);
+                    throw new NoChargeException();
+                } else {
+                    throw new Exception(tl("bedMissing"));
+                }
+            }
+        }
+        else if (args.length > 0) {
             nameParts = args[0].split(":");
             if (nameParts[0].length() == args[0].length() || !user.isAuthorized("essentials.home.others")) {
                 homeName = nameParts[0];
@@ -37,6 +49,7 @@ public class Commandhome extends EssentialsCommand {
                 }
             }
         }
+        
         try {
             if ("bed".equalsIgnoreCase(homeName) && user.isAuthorized("essentials.home.bed")) {
                 final Location bed = player.getBase().getBedSpawnLocation();
